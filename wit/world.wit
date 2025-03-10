@@ -1,0 +1,28 @@
+package twin:test;
+
+interface stateful {
+  use math.{vec3, mat4};
+
+  record component {
+    id: s32,
+    position: vec3,
+  }
+
+  resource clip-projector {
+    constructor();
+
+    get-components-count: func () -> u32;
+
+    get-components: func () -> result<list<component>>;
+
+    fill-components: func (components: list<component>) -> result;
+
+    set-projection: func (matrix: mat4) -> result;
+
+    project: func ();
+  }
+}
+
+world main {
+  export stateful;
+}

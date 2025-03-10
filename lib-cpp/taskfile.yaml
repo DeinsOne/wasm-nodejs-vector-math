@@ -1,0 +1,34 @@
+version: "3"
+
+env:
+  WASI_OS: linux
+  WASI_ARCH: x86_64
+  WASI_VERSION: 24
+  WASI_VERSION_FULL: "{{.WASI_VERSION}}.0"
+  WASI_SDK_PATH: "../toolchain/wasi-sdk-{{.WASI_VERSION_FULL}}-{{.WASI_ARCH}}-{{.WASI_OS}}"
+
+  CC: "{{.WASI_SDK_PATH}}/bin/clang --sysroot={{.WASI_SDK_PATH}}/share/wasi-sysroot"
+  CXX: "{{.WASI_SDK_PATH}}/bin/clang++ --sysroot={{.WASI_SDK_PATH}}/share/wasi-sysroot"
+
+  # CC: "zig c --target=wasm32-wasi"
+  # CXX: "zig c++ --target=wasm32-wasi "
+
+tasks:
+  bindgen:
+    desc: generate bindings from wit to c
+    cmds:
+      - mkdir -p bindings
+      - wit-bindgen c ../wit --out-dir bindings
+
+  compile:
+    desc: "compile sources"
+    cmds:
+      - mkdir -p build
+      - "{{.CXX}} -O3 -Os -Wl,--strip-all -Wl,--export-dynamic -Wl,--no-entry -fno-exceptions bindings/*.o bindings/*.c src/*.c* -o build/main.wasm -mexec-model=reactor"
+      - wasm-tools component new build/main.wasm --adapt ../toolchain/wasi_snapshot_preview1.reactor.wasm -o build/main.component.wasm
+
+  transpile:
+    desc: generated js bindings from built wasm component
+    cmds:
+      - mkdir -p dist
+      - jco transpile --optimize --base64-cutoff 1048576 build/main.component.wasm -o dist

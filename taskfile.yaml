@@ -1,0 +1,37 @@
+version: "3"
+
+env:
+  WASI_OS: linux
+  WASI_ARCH: x86_64
+  WASI_VERSION: 24
+  WASI_VERSION_FULL: "{{.WASI_VERSION}}.0"
+
+tasks:
+  default:
+    cmd: task --list-all
+
+  install-toolchain:
+    desc: "install toolchain"
+    deps:
+      - install-wasi-sdk
+      - install-wasip1-reactor-adapter
+
+  install-wasi-sdk:
+    generates:
+      - toolchain/wasi-sdk-{{.WASI_VERSION_FULL}}-{{.WASI_ARCH}}-{{.WASI_OS}}
+      - wasi-sdk-{{.WASI_VERSION_FULL}}-{{.WASI_ARCH}}-{{.WASI_OS}}.tar.gz
+      - wasi-sdk-{{.WASI_VERSION_FULL}}-{{.WASI_ARCH}}-{{.WASI_OS}}
+    cmds:
+      - wget "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-{{.WASI_VERSION}}/wasi-sdk-{{.WASI_VERSION_FULL}}-{{.WASI_ARCH}}-{{.WASI_OS}}.tar.gz"
+      - tar xvf wasi-sdk-{{.WASI_VERSION_FULL}}-{{.WASI_ARCH}}-{{.WASI_OS}}.tar.gz
+      - mkdir -p toolchain
+      - mv wasi-sdk-{{.WASI_VERSION_FULL}}-{{.WASI_ARCH}}-{{.WASI_OS}} toolchain
+      - rm wasi-sdk-{{.WASI_VERSION_FULL}}-{{.WASI_ARCH}}-{{.WASI_OS}}.tar.gz
+
+  install-wasip1-reactor-adapter:
+    generates:
+      - toolchain/wasi_snapshot_preview1.reactor.wasm
+    cmds:
+      - wget https://github.com/bytecodealliance/wasmtime/releases/download/v30.0.2/wasi_snapshot_preview1.reactor.wasm
+      - mkdir -p toolchain
+      - mv wasi_snapshot_preview1.reactor.wasm toolchain
