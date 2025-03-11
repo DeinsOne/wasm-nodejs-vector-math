@@ -4,7 +4,6 @@ const za = @import("zalgebra");
 
 const c = @cImport({
     @cInclude("main.h");
-    // @cInclude("/home/deins/Code/wasm-vs-node-vec-math/lib-zig/bindings/main.h");
 });
 
 const allocator = std.heap.page_allocator;

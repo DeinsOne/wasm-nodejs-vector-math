@@ -57,13 +57,12 @@ public:
     projection = matrix;
   }
 
-  // The method doesn't align to interface definition and performs extra work, so compiler doesn't optimize it away
   void project() {
-    auto resultsVec = std::vector<glm::vec3>();
-    resultsVec.reserve(components.size());
+    volatile float _a = 0.0f;
 
     for (auto &comp : components) {
-      resultsVec.push_back(projection * glm::vec4(comp.second, 1.0f));
+      auto const projected = projection * glm::vec4(comp.second, 1.0f);
+      _a = projected.x;
     }
   }
 };

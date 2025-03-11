@@ -20,7 +20,7 @@ src/fill-components.bench.ts - copy data from JS to WASM, in chunks by 10 f32 va
 ```
 
 ```
-src/get-components.bench.ts - copy data from WASM to JS
+src/get-components.bench.ts - copy data from WASM to JS, in chunks by 1000 f32 values
 
   name            hz     min     max    mean     p75     p99    p995    p999     rme  samples
 · wasm zig  3,833.83  0.2017  3.1483  0.2608  0.2445  0.9920  1.6740  3.0735  ±3.28%     1917
@@ -41,9 +41,9 @@ src/set-projection.bench.ts - set projection matrix (copy chunk of 16 f32 values
 src/project.bench.ts - project 1000 points (multiply 4x4 matrix by 4d vector)
 
   name              hz     min     max    mean     p75     p99    p995    p999     rme  samples
-· wasm zig   12,194.79  0.0771  0.2985  0.0820  0.0793  0.1211  0.1746  0.2224  ±0.38%     6098   slowest
-· wasm cpp  165,071.06  0.0057  0.1109  0.0061  0.0059  0.0096  0.0130  0.0209  ±0.15%    82536   fastest
-· js         41,477.08  0.0171  0.6878  0.0241  0.0217  0.2158  0.2543  0.3006  ±1.48%    20739
+· wasm zig   10,785.26  0.0785  0.5277  0.0927  0.0949  0.2315  0.2581  0.4459  ±0.85%     5393   slowest
+· wasm cpp  593,445.17  0.0014  0.3856  0.0017  0.0016  0.0037  0.0042  0.0133  ±0.41%   296723   fastest
+· js         34,969.97  0.0194  1.1218  0.0286  0.0267  0.1080  0.3235  0.5348  ±1.83%    17485
 ```
 
 
